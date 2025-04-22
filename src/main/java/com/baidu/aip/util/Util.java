@@ -36,6 +36,10 @@ public class Util {
     private static BitSet URI_UNRESERVED_CHARACTERS = new BitSet();
     private static String[] PERCENT_ENCODED_STRINGS = new String[256];
 
+    public static final int BYTES_PER_MS = 16000 * 2 / 1000; // 16000的采样率，16bits=2bytes， 1000ms
+    public static final int FRAME_MS = 160; // websocket一个数据帧 160ms
+    public static final int BYTES_PER_FRAME = BYTES_PER_MS * FRAME_MS; // 一个数据帧的大小=5120bytes
+
 
     static {
         for (int i = 'a'; i <= 'z'; i++) {
@@ -174,5 +178,26 @@ public class Util {
     public static boolean isLiteral(String input) {
         Pattern pattern = Pattern.compile("[0-9a-zA-Z_]*");
         return pattern.matcher(input).matches();
+    }
+
+
+    /**
+     * 毫秒转为字节数
+     *
+     * @param durationMs 毫秒
+     * @return 字节数
+     */
+    public static long timeToBytes(long durationMs) {
+        return durationMs * BYTES_PER_MS;
+    }
+
+    /**
+     * 字节数转为毫秒
+     *
+     * @param size 字节数
+     * @return 毫秒
+     */
+    public static int bytesToTime(int size) {
+        return size / BYTES_PER_MS;
     }
 }

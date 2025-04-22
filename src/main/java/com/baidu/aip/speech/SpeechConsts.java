@@ -16,4 +16,7 @@ public class SpeechConsts {
 
     static final String SPEECH_ASR_URL = "http://vop.baidu.com/server_api";
     static final String SPEECH_TTS_URL = "http://tsn.baidu.com/text2audio";
+
+    /* 可以改为wss:// */
+    static final String SPEECH_RT_ASR_URL = "wss://vop.baidu.com/realtime_asr";
 }

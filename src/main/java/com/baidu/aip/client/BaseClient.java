@@ -350,4 +350,15 @@ public abstract class BaseClient {
         this.expireDate = expireDate;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getAipKey() {
+        return aipKey;
+    }
+
+    public String getAipToken() {
+        return aipToken;
+    }
 }

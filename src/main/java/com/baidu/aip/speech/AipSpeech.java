@@ -19,6 +19,12 @@ import com.baidu.aip.util.AipClientConst;
 import com.baidu.aip.util.Base64Util;
 import com.baidu.aip.util.SignUtil;
 import com.baidu.aip.util.Util;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,8 +32,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class AipSpeech extends BaseClient {
+
+    protected WebSocket webSocket;
 
     public AipSpeech(String appId, String apiKey, String secretKey) {
         super(appId, apiKey, secretKey);
@@ -156,5 +166,19 @@ public class AipSpeech extends BaseClient {
             }
         }
         return response;
+    }
+
+    public Flowable<Map<String, Object>> rtasr(Flowable<byte[]> flowable) {
+        return Flowable.create(emitter -> {
+                createWebSocketConnect(new SpeechWebSocketListener(this, flowable, emitter));
+            }, BackpressureStrategy.BUFFER);
+    }
+    protected void createWebSocketConnect(WebSocketListener webSocketListener){
+        OkHttpClient client = new OkHttpClient.Builder().connectTimeout(2000, TimeUnit.MILLISECONDS).build();
+        String url = SpeechConsts.SPEECH_RT_ASR_URL + "?sn=" + UUID.randomUUID().toString();
+        LOGGER.info("runner begin: " + url);
+        Request request = new Request.Builder().url(url).build();
+        // 创建websocket连接
+        this.webSocket = client.newWebSocket(request, webSocketListener); // AipSpeechWebSocketListener 为回调类
     }
 }
