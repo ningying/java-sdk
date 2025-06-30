@@ -43,10 +43,13 @@ public class SpeechWebSocketListener extends WebSocketListener {
 
     private Disposable speechSendTask;
 
-    private Long socketId = System.currentTimeMillis();
+    private final Long socketId = System.currentTimeMillis();
 
-    public SpeechWebSocketListener(AipSpeech apiSpeech, Flowable<byte[]> flowable, FlowableEmitter<Map<String, Object>> emitter) {
+    private final Integer devPid;
+
+    public SpeechWebSocketListener(AipSpeech apiSpeech, boolean isEn, Flowable<byte[]> flowable, FlowableEmitter<Map<String, Object>> emitter) {
         this.aipSpeech = apiSpeech;
+        this.devPid = isEn? 1737 : 1537;
         isClosed = new AtomicBoolean(false); // 是否
         stat = new SpeechStat(); //一些统计数据
 
@@ -83,7 +86,7 @@ public class SpeechWebSocketListener extends WebSocketListener {
         params.put("appid", Long.parseLong(this.aipSpeech.getAppId()));
         params.put("appkey", this.aipSpeech.getAipKey());
 
-        params.put("dev_pid", 15372);
+        params.put("dev_pid", devPid);
         params.put("cuid", "self_defined_server_id_like_mac_address");
 
         params.put("format", "pcm");

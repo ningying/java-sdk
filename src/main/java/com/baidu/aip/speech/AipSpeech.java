@@ -168,9 +168,9 @@ public class AipSpeech extends BaseClient {
         return response;
     }
 
-    public Flowable<Map<String, Object>> rtasr(Flowable<byte[]> flowable) {
+    public Flowable<Map<String, Object>> rtasr(boolean isEn, Flowable<byte[]> flowable) {
         return Flowable.create(emitter -> {
-                createWebSocketConnect(new SpeechWebSocketListener(this, flowable, emitter));
+                createWebSocketConnect(new SpeechWebSocketListener(this, isEn, flowable, emitter));
             }, BackpressureStrategy.BUFFER);
     }
     protected void createWebSocketConnect(WebSocketListener webSocketListener){
